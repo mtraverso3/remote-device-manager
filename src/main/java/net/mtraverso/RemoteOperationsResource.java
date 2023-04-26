@@ -9,6 +9,7 @@ import io.airlift.log.Logger;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.net.URISyntaxException;
 
 @Path("/")
 public class RemoteOperationsResource {
@@ -64,6 +65,18 @@ public class RemoteOperationsResource {
                 .build();
         return Response.ok(twiml.toXml()).build();
     }
+
+    @GET
+    @Path("/location")
+    public Response location(){
+        try {
+            return Response.temporaryRedirect(smsManager.redirectUrl.toURI()).build();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return Response.serverError().build();
+        }
+    }
+
 
 
 }
