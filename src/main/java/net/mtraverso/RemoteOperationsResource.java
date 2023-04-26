@@ -27,10 +27,9 @@ public class RemoteOperationsResource {
     @Path("/subscribe")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED) // "hash" as a url parameter
     public Response subscribe(@QueryParam("hash") String uuid) {
-        logger.info("Subscribed: " + uuid);
         Listener device = remoteOperationsManager.checkIn(uuid);
         boolean shouldOpenSite = device.shouldOpenSite();
-
+        logger.info("Subscribed: " + uuid + " shouldOpenSite: " + shouldOpenSite);
         return Response.ok().header("shouldOpenSite", shouldOpenSite).build();
     }
 
