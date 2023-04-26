@@ -123,7 +123,7 @@ public class SmsManager {
                         .filter(Listener::isAlive)
                         .iterator();
 
-                int i = 0;
+                int i = 1;
                 while (iterator.hasNext()) {
                     Listener listener = iterator.next();
                     if (i == Integer.parseInt(split[1])) {

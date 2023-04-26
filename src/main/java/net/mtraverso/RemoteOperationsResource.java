@@ -30,7 +30,9 @@ public class RemoteOperationsResource {
         Listener device = remoteOperationsManager.checkIn(uuid);
         boolean shouldOpenSite = device.shouldOpenSite();
         logger.info("Subscribed: " + uuid + " shouldOpenSite: " + shouldOpenSite);
-        return Response.ok().header("data", shouldOpenSite).build();
+//        return a json object with the following fields: data=shouldOpenSite
+        return Response.ok().entity("{\"data\":" + shouldOpenSite + "}").build();
+//        return Response.ok().header("data", shouldOpenSite).build();
     }
 
     @POST
