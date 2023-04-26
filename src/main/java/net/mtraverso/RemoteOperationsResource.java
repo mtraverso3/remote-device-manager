@@ -24,7 +24,7 @@ public class RemoteOperationsResource {
     @POST
     @Path("/subscribe")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED) // "hash" as a url parameter
-    public Response subscribe(@FormParam("hash") String uuid) {
+    public Response subscribe(@QueryParam("hash") String uuid) {
         Listener device = remoteOperationsManager.checkIn(uuid);
         boolean shouldOpenSite = device.shouldOpenSite();
 
@@ -34,7 +34,7 @@ public class RemoteOperationsResource {
     @POST
     @Path("/consume")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED) // "hash" as a url parameter
-    public Response consume(@FormParam("hash") String uuid) {
+    public Response consume(@QueryParam("hash") String uuid) {
         remoteOperationsManager.consume(uuid);
         return Response.ok().build();
     }
