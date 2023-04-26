@@ -19,11 +19,13 @@ public class SmsManager {
         SET_DEVICE_REDIRECT("redirect");
 
         Command(String command_string) {
+            this.command_string = command_string;
         }
+        private final String command_string;
 
         static Command of(String command_string) {
             for (Command command : Command.values()) { //search for the equal command_string in the enum
-                if (command.name().equals(command_string.toLowerCase())) {
+                if (command.command_string.equals(command_string.toLowerCase())) {
                     return command;
                 }
             }
