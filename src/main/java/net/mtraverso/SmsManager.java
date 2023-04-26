@@ -78,7 +78,7 @@ public class SmsManager {
             }
             case LIST_DEVICES -> {
                 //get only the listeners that are alive
-                ListIterator<Listener> iterator = (ListIterator<Listener>) remoteOperationsManager.getListeners().stream().filter(Listener::isAlive).iterator();
+                ListIterator<Listener> iterator = remoteOperationsManager.getListeners().stream().filter(Listener::isAlive).toList().listIterator();
 
                 StringBuilder sb = new StringBuilder();
                 while (iterator.hasNext()) {
@@ -88,7 +88,8 @@ public class SmsManager {
                         sb.append("\n");
                     }
                 }
-                yield sb.toString();
+                String result = sb.toString();
+                yield result.isEmpty() ? "No devices" : result;
             }
             case DEVICE_OPEN_SITE -> {
                 Listener listener = Listener.getListenerByEither(remoteOperationsManager.getListeners(), split[1]);
