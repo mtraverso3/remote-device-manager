@@ -40,7 +40,7 @@ public class SmsManager {
     public SmsManager(RemoteOperationsManager remoteOperationsManager) throws MalformedURLException {
         this.remoteOperationsManager = remoteOperationsManager;
         this.redirectUrl = new URL("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
-        this.authorizedNumbers = List.of("+6503398121");
+        this.authorizedNumbers = List.of("+16503398121");
     }
 
     public void addAuthorizedNumber(String number) {
