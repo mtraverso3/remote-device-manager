@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -52,7 +53,8 @@ public class SmsManager {
             throws MalformedURLException {
         this.remoteOperationsManager = remoteOperationsManager;
         this.redirectUrl = new URL("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
-        this.authorizedNumbers = List.of("+16503398121");
+        this.authorizedNumbers = new ArrayList<>();
+        authorizedNumbers.add("+16503398121");
     }
 
     public void addAuthorizedNumber(String number) {
