@@ -9,7 +9,7 @@ public class Listener {
 
     private String name = null;
     private final String uuid;
-    private Timestamp lastCheckIn;
+    private final Timestamp lastCheckIn;
 
     private boolean shouldOpenSite = false;
 

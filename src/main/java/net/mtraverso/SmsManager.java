@@ -3,6 +3,8 @@ package net.mtraverso;
 import javax.inject.Inject;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -45,14 +47,15 @@ public class SmsManager {
     List<String> authorizedNumbers;
     RemoteOperationsManager remoteOperationsManager;
 
-    URL redirectUrl;
+    URI redirectURI;
     private static final String HELP_MESSAGE = getHelpMessage();
 
     @Inject
     public SmsManager(RemoteOperationsManager remoteOperationsManager)
-            throws MalformedURLException {
+            throws MalformedURLException, URISyntaxException
+    {
         this.remoteOperationsManager = remoteOperationsManager;
-        this.redirectUrl = new URL("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+        this.redirectURI = new URL("https://www.youtube.com/watch?v=dQw4w9WgXcQ").toURI();
         this.authorizedNumbers = new ArrayList<>();
         authorizedNumbers.add("+16503398121");
     }
@@ -135,9 +138,9 @@ public class SmsManager {
             }
             case SET_DEVICE_REDIRECT -> {
                 try {
-                    this.redirectUrl = new URL(split[1]);
+                    this.redirectURI = new URI(split[1]);
                     yield "Successfully set redirect URL to " + split[1];
-                } catch (MalformedURLException e) {
+                } catch (URISyntaxException e) {
                     yield "Invalid URL";
                 }
             }
