@@ -74,7 +74,7 @@ public class SmsManager {
 
     public String handleSms(String from, String body) {
         if (!isAuthorizedNumber(from)) {
-            return "Unauthorized number";
+            return "Unauthorized number 11111";
         }
         String[] split = body.split(" ");
         Command command = Command.of(split[0]);
