@@ -9,13 +9,15 @@ import io.airlift.log.Logger;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.net.URI;
+import java.util.Optional;
 
 @Path("/")
 public class RemoteOperationsResource {
 
-    RemoteOperationsManager remoteOperationsManager;
-    SmsManager smsManager;
-    Logger logger = Logger.get(RemoteOperationsResource.class);
+    private final RemoteOperationsManager remoteOperationsManager;
+    private final SmsManager smsManager;
+    private final Logger logger = Logger.get(RemoteOperationsResource.class);
 
     @Inject
     public RemoteOperationsResource(RemoteOperationsManager remoteOperationsManager, SmsManager smsManager) {
@@ -27,6 +29,9 @@ public class RemoteOperationsResource {
     @Path("/subscribe")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED) // "hash" as a url parameter
     public Response subscribe(@QueryParam("hash") String uuid) {
+        if (uuid == null || uuid.isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         Listener device = remoteOperationsManager.checkIn(uuid);
         boolean shouldOpenSite = device.shouldOpenSite();
         logger.info("Subscribed: " + uuid + " shouldOpenSite: " + shouldOpenSite);
@@ -67,8 +72,10 @@ public class RemoteOperationsResource {
 
     @GET
     @Path("/location")
-    public Response location(){
-        return Response.temporaryRedirect(smsManager.redirectURI).build();
+    public Response location(@QueryParam("hash") String uuid){
+        Optional<Listener> listener = Listener.getListenerByUUID(remoteOperationsManager.getListeners(), uuid);
+        URI redirectURI = listener.map(Listener::getRedirectURI).orElse(URI.create("https://www.youtube.com/watch?v=dQw4w9WgXcQ"));
+        return Response.temporaryRedirect(redirectURI).build();
     }
 
 

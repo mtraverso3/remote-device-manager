@@ -1,28 +1,37 @@
 package net.mtraverso;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.net.URI;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 public class Listener {
 
-    public static final int ALIVE_TIMEOUT = 10_000;
+    public static final int ALIVE_TIMEOUT = 10_000; //milliseconds
 
     private String name = null;
     private final String uuid;
     private final Timestamp lastCheckIn;
 
     private boolean shouldOpenSite = false;
+    private URI redirectURI = URI.create("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
 
-    Listener(String UUID) {
-        this.uuid = UUID;
+    @JsonCreator
+    Listener(@JsonProperty("uuid") String uuid) {
+        this.uuid = uuid;
         this.lastCheckIn = new Timestamp(System.currentTimeMillis());
     }
-    Listener(String name, String uuid) {
+    @JsonCreator
+    Listener(@JsonProperty("name") String name, @JsonProperty("uuid") String uuid) {
         this.name = name;
         this.uuid = uuid;
         this.lastCheckIn = new Timestamp(System.currentTimeMillis());
     }
 
+    @JsonProperty
     public String getName() {
         return name;
     }
@@ -31,8 +40,18 @@ public class Listener {
         return name != null;
     }
 
+    @JsonProperty
     public String getUUID() {
         return uuid;
+    }
+
+    @JsonProperty
+    public URI getRedirectURI() {
+        return redirectURI;
+    }
+
+    public void setRedirectURI(URI redirectURI) {
+        this.redirectURI = redirectURI;
     }
 
     public Timestamp getLastCheckIn() {
@@ -63,27 +82,27 @@ public class Listener {
         this.name = name;
     }
 
-    public static Listener getListenerByUUID(List<Listener> listeners, String uuid) {
+    public static Optional<Listener> getListenerByUUID(List<Listener> listeners, String uuid) {
         for (Listener listener : listeners) {
             if (listener.getUUID().equals(uuid)) {
-                return listener;
+                return Optional.of(listener);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    public static Listener getListenerByName(List<Listener> listeners, String name) {
+    public static Optional<Listener> getListenerByName(List<Listener> listeners, String name) {
         for (Listener listener : listeners) {
             if (listener.getName().equals(name)) {
-                return listener;
+                return Optional.of(listener);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    public static Listener getListenerByEither(List<Listener> listeners, String nameOrUUID) {
-        Listener listener = getListenerByUUID(listeners, nameOrUUID);
-        if (listener == null) {
+    public static Optional<Listener> getListenerByEither(List<Listener> listeners, String nameOrUUID) {
+        Optional<Listener> listener = getListenerByUUID(listeners, nameOrUUID);
+        if (listener.isEmpty()) {
             listener = getListenerByName(listeners, nameOrUUID);
         }
         return listener;

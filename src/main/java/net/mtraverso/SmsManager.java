@@ -6,13 +6,9 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 public class SmsManager {
-
     private enum Command {
         AUTHORIZE_NUMBER("authorize", "Authorize a number to use the service", "auth"),
         DEAUTHORIZE_NUMBER("deauthorize", "Deauthorize a number from using the service", "deauth"),
@@ -107,18 +103,16 @@ public class SmsManager {
                 yield result.isEmpty() ? "No devices" : result;
             }
             case DEVICE_OPEN_SITE -> {
-                Listener listener = Listener.getListenerByEither(remoteOperationsManager.getListeners(), split[1]);
-                if (listener != null) {
-                    listener.setShouldOpenSite(true);
-                }
-                yield listener != null ? "Successfully set " + listener.getName() + " to open site" : "No listener found";
+                Optional<Listener> listener = Listener.getListenerByEither(remoteOperationsManager.getListeners(), split[1]);
+
+                listener.ifPresent(value -> value.setShouldOpenSite(true));
+                yield listener.map(value -> "Successfully set " + value.getName() + " to open site").orElse("No listener found");
             }
             case ALIAS_DEVICE -> {
-                Listener listener = Listener.getListenerByEither(remoteOperationsManager.getListeners(), split[1]);
-                if (listener != null) {
-                    listener.setName(split[2]);
-                }
-                yield listener != null ? "Successfully aliased " + listener.getUUID() + " to " + listener.getName() : "No listener found";
+                Optional<Listener> listener = Listener.getListenerByEither(remoteOperationsManager.getListeners(), split[1]);
+
+                listener.ifPresent(value -> value.setName(split[2]));
+                yield listener.map(value -> "Successfully aliased " + value.getUUID() + " to " + value.getName()).orElse("No listener found");
             }
             case ALIAS_DEVICE_BY_NUMBER -> {
                 Iterator<Listener> iterator = remoteOperationsManager.getListeners()

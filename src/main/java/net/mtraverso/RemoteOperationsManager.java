@@ -2,6 +2,7 @@ package net.mtraverso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class RemoteOperationsManager {
 
@@ -20,26 +21,24 @@ public class RemoteOperationsManager {
     }
 
     synchronized public Listener checkIn(String uuid) {
-        Listener listener = Listener.getListenerByUUID(listeners, uuid);
-        if (listener != null) {
-            listener.checkIn();
-        } else {
-            listener = new Listener(uuid);
-            listeners.add(listener);
+        Optional<Listener> listener = Listener.getListenerByUUID(listeners, uuid);
+
+        if (listener.isPresent()) {
+            listener.orElseThrow().checkIn();
+            return listener.orElseThrow();
         }
-        return listener;
+
+        Listener newListener = new Listener(uuid);
+        listeners.add(newListener);
+        return newListener;
     }
 
     public void consume(String UUID) {
-        Listener listener = Listener.getListenerByUUID(listeners, UUID);
-        if (listener != null) {
-            listener.checkIn();
-            listener.setShouldOpenSite(false);
+        Optional<Listener> listener = Listener.getListenerByUUID(listeners, UUID);
+
+        if (listener.isPresent()) {
+            listener.orElseThrow().checkIn();
+            listener.orElseThrow().setShouldOpenSite(false);
         }
     }
-
-
-
-
-
 }

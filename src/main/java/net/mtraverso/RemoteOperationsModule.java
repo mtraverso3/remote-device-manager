@@ -12,6 +12,9 @@ public class RemoteOperationsModule implements Module  {
         binder.bind(RemoteOperationsManager.class).in(SINGLETON);
         binder.bind(SmsManager.class).in(SINGLETON);
         jaxrsBinder(binder).bind(RemoteOperationsResource.class);
+        jaxrsBinder(binder).bind(UiApiResource.class);
+
+        jaxrsBinder(binder).bind(CorsFilter.class);
     }
 
 }
